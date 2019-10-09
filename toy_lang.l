@@ -15,7 +15,7 @@
 "loop"		{return LOOP;}
 "return"	{return RETURN;}
 "print"		{return PRINT;}
-"null"		{return NULL;}
+"null"		{return _NULL;}
 "new"		{return NEW;}
 "int" 		{return INT;}
 "real"		{return REAL;}
@@ -40,6 +40,6 @@
 [a-zA-Z][_a-zA-Z0-9]*	{return IDENTIFIER;}
 [0-9]+		{return NUMBER;}
 [ \t\n]		;
-.		{ECHO; yyerror("Unexpected Character");}
+.		{yyerror("Unexpected Character");}
 %%
 int yywrap(void) {return 1;}

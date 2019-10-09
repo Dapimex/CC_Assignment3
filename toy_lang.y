@@ -1,3 +1,8 @@
+%{
+#include <stdio.h>     /* C declarations used in actions */
+#include <stdlib.h>
+%}
+
 // Identifiers & numbers 
 %token IDENTIFIER
 %token NUMBER
@@ -16,7 +21,7 @@
 %token LOOP
 %token RETURN
 %token PRINT
-%token NULL
+%token _NULL
 %token NEW
 %token INT
 %token REAL
@@ -248,7 +253,7 @@ MultSign
 Factor
        : NUMBER				{;}
        | LeftPart			{;}
-       | NULL				{;}
+       | _NULL				{;}
        | NEW NewType			{;}
        | NEW NewType LBRACKET Expression RBRACKET	{;}
        ;
@@ -271,3 +276,8 @@ ArrayTail
        ;
 
 %%
+void yyerror (char *s) {fprintf (stderr, "%s\n", s);} 
+
+int main(void) {
+	return yyparse();
+}
