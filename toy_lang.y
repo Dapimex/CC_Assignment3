@@ -246,7 +246,7 @@ Expression
 
 AddSign
        : PLUS				{$$ = 1;}
-       | MINUS				{$$ = -1;}
+       | MINUS			{$$ = -1;}
        ;
 
 Terms
@@ -261,12 +261,12 @@ Term
 
 Factors
        : /* empty */			{$$ = 1;}
-       | MultSign Factor Factors	{$$ = $2;}
+       | MultSign Factor Factors	{$$ = pow($2, $1) * $3;}
        ;
 
 MultSign
        : MULTIPLY			{$$ = 1;}
-       | DIVIDE				{$$ = -1;}
+       | DIVIDE			{$$ = -1;}
        ;
 
 Factor
