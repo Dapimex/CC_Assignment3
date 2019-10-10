@@ -1,5 +1,8 @@
 %{
 #include "y.tab.h"
+
+void yyerror (char *s);
+int yylex();
 %}
 %%
 "import"	{return IMPORT;}
@@ -37,8 +40,8 @@
 \-		{return MINUS;}
 \*		{return MULTIPLY;}
 \/		{return DIVIDE;}
-[a-zA-Z][_a-zA-Z0-9]*	{return IDENTIFIER;}
-[0-9]+		{return NUMBER;}
+[a-zA-Z][_a-zA-Z0-9]*	{yylval.ID = yytext; return IDENTIFIER;}
+[0-9]+		{yylval.NUM = atoi(yytext); return NUMBER;}
 [ \t\n]		;
 .		{yyerror("Unexpected Character");}
 %%
