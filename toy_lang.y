@@ -13,7 +13,7 @@ main() {
 
 %}
 
-%union {int NUM; char ID;}
+%union {double NUM; char ID;}
 
 // Identifiers & numbers 
 %token <ID> IDENTIFIER
@@ -219,7 +219,7 @@ ArgumentList
        ;
 
 PrintStatement
-       : PRINT Expression SEMICOLON	{printf("%d", $2);}
+       : PRINT Expression SEMICOLON	{printf("%g", $2);}
        ;
 
 Block
