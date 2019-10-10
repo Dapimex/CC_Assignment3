@@ -241,7 +241,7 @@ RelationalOperator
 
 Expression
        :         Term Terms		{$$ = $1 + $2;}
-       | AddSign Term Terms		{$$ = $1*($2 + $3);}
+       | AddSign Term Terms		{$$ = $1*$2 + $3;}
        ;
 
 AddSign
@@ -251,12 +251,12 @@ AddSign
 
 Terms
        : /* empty */			{$$ = 0;}
-       | AddSign Term Terms		{$$ = $1*($2 + $3);}
+       | AddSign Term Terms		{$$ = $1*$2 + $3;}
        ;
 
 Term
        : Factor                    {$$ = $1;}
-       | Factor Factors            {$$ = $1 + $2;}
+       | Factor Factors            {$$ = $1 * $2;}
        ;
 
 Factors
