@@ -219,7 +219,7 @@ ArgumentList
        ;
 
 PrintStatement
-       : PRINT Expression SEMICOLON	{;}
+       : PRINT Expression SEMICOLON	{printf("%d", $2);}
        ;
 
 Block
@@ -255,7 +255,8 @@ Terms
        ;
 
 Term
-       : Factor Factors			{$$ = $1 + $2;}
+       : Factor                    {$$ = $1;}
+       | Factor Factors            {$$ = $1 + $2;}
        ;
 
 Factors
@@ -269,7 +270,7 @@ MultSign
        ;
 
 Factor
-       : NUMBER				{printf("%d", $1);}
+       : NUMBER				{$$ = $1;}
        | LeftPart			{;}
        | _NULL				{;}
        | NEW NewType			{;}
