@@ -27,7 +27,122 @@ void print_token(string token) {
        cout << token << "\n";
 }
 
+struct ClassMembers {
+       struct ClassMembers *classmembers;
+       struct ClassMember *classmember;
 
+       ClassMembers() : classmembers(nullptr), classmember(nullptr) {}
+
+       void traverse() {
+              for (int i = 0; i < spaces; i++, cout << " "); cout << "| ";
+              cout << "ClassMembers\n";
+              spaces += SPACES_ADD;
+              if (classmembers) classmembers->traverse();
+              if (classmember) classmember->traverse();
+              spaces -= SPACES_ADD;
+       }
+};
+
+struct ClassMember {
+       struct FieldDeclaration *fielddeclaration;
+       struct MethodDeclaration *methoddeclaration;
+       ClassMember() : fielddeclaration(nullptr), methoddeclaration(nullptr) {}
+
+       void traverse() {
+              for (int i = 0; i < spaces; i++, cout << " "); cout << "| ";
+              cout << "ClassMember\n";
+              spaces += SPACES_ADD;
+              if (fielddeclaration) fielddeclaration->traverse();
+              if (methoddeclaration) methoddeclaration->traverse();
+              spaces += SPACES_ADD;
+       }
+};
+
+struct FieldDeclaration {
+       struct Visibility *visibility;
+       struct Staticness *staticness;
+       struct Type *type;
+       string t_id, t_semicolon;
+
+       FieldDeclaration() : visibility(nullptr), staticness(nullptr), type(nullptr) {}
+
+       void traverse() {
+              for (int i = 0; i < spaces; i++, cout << " "); cout << "| ";
+              cout << "FieldDeclaration\n";
+              spaces += SPACES_ADD;
+
+              if (visibility) visibility->traverse();
+              if (staticness) staticness->traverse();
+              if (type) type->traverse();
+              print_token(t_id);
+              print_token(t_semicolon);
+
+              spaces -= SPACES_ADD;
+       }
+};
+
+struct Visibility {
+       string token;
+
+       void traverse() {
+              for (int i = 0; i < spaces; i++, cout << " "); cout << "| ";
+              cout << "Visibility\n";
+              spaces += SPACES_ADD;
+              print_token(token);
+              spaces -= SPACES_ADD;
+       }
+};
+
+struct Staticness {
+       string t_static;
+       void traverse() {
+              for (int i = 0; i < spaces; i++, cout << " "); cout << "| ";
+              cout << "Staticness\n";
+              spaces += SPACES_ADD;
+              print_token(t_static);
+              spaces -= SPACES_ADD;
+       }
+};
+
+struct MethodDeclaration {
+       struct Visibility *visibility;
+       struct Staticness *staticness;
+       struct MethodType *methodtype;
+       struct Parameters *parameters;
+       struct Body *body;
+       string t_id;
+       MethodDeclaration() : visibility(nullptr), staticness(nullptr), methodtype(nullptr), parameters(nullptr), body(nullptr) {}
+
+       void traverse() {
+              for (int i = 0; i < spaces; i++, cout << " "); cout << "| ";
+              cout << "MethodDeclaration\n";
+              spaces += SPACES_ADD;
+              if (visibility) visibility->traverse();
+              if (staticness) staticness->traverse();
+              if (methodtype) methodtype->traverse();
+              print_token(t_id);
+              if (parameters) parameters->traverse();
+              if (body) body->traverse();
+              spaces -= SPACES_ADD;
+       }
+};
+
+struct Parameters {
+       struct ParameterList *parameterlist;
+       string t_lparen, t_rparen;
+
+       ParameterList() : parameterlist(nullptr) {}
+
+       void traverse() {
+              for (int i = 0; i < spaces; i++, cout << " "); cout << "| ";
+              cout << "ParameterList\n";
+              spaces += SPACES_ADD;
+              print_token(t_lparen);
+              if (parameterlist) parameterlist->traverse();
+              print_token(t_rparen);
+              spaces -= SPACES_ADD;
+       }
+};
 
 struct ParameterList {
        struct Parameter *parameter;
@@ -636,43 +751,42 @@ Extension
        ;
 
 ClassBody
-       : LBRACE              RBRACE	
-       | LBRACE ClassMembers RBRACE	
+       : LBRACE              RBRACE	{struct ClassBody *cb = new ClassBody(); cb->t_lbrace = $1; cb->t_rbrace = $2; $$ = cb;}
+       | LBRACE ClassMembers RBRACE	{struct ClassBody *cb = new ClassBody(); cb->t_lbrace = $1; cb->classmember = $2; cb->t_rbrace = $3; $$ = cb;}
        ;
 
 ClassMembers
-       :              ClassMember	
-       | ClassMembers ClassMember	
+       :              ClassMember	 {struct ClassMembers *cm = new ClassMembers(); cm->classmember = $1; $$ = cm;}
+       | ClassMembers ClassMember	 {struct ClassMembers *cm = new ClassMembers(); cd->classmembers = $2; cm->classmember = $2; $$ = cm;}
        ;
 
 ClassMember
-       : FieldDeclaration		
-       | MethodDeclaration		
+       : FieldDeclaration		{struct ClassMember *cm = new ClassMember(); cm->fielddeclaration = $1; $$ = cm;}
+       | MethodDeclaration		{struct ClassMember *cm = new ClassMember(); cm->methoddeclaration = $1; $$ = cm;}
        ;
 
 FieldDeclaration
-       : Visibility Staticness Type IDENTIFIER SEMICOLON		
+       : Visibility Staticness Type IDENTIFIER SEMICOLON	{struct FieldDeclaration *fd = new FieldDeclaration(); fd->visibility = $1; fd->staticness = $2; fd->type = $3; fd->t_id = $4; fd->t_semicolon = $5; $$ = fd;}
        ;
 
 Visibility
        : /* empty */			
-       | PRIVATE			
-       | PUBLIC				
+       | PRIVATE			{struct Visibility *v = new Visibility(); v->token = $1; $$ = v;}
+       | PUBLIC			{struct Visibility *v = new Visibility(); v->token = $1; $$ = v;}
        ;
 
 Staticness
        : /* empty */
-       | STATIC				
+       | STATIC				{struct Staticness *s = new Staticness(); s->t_static = $1; $$ = s;}
        ;
 
 MethodDeclaration
-       : Visibility Staticness MethodType IDENTIFIER Parameters		
-            Body			
+       : Visibility Staticness MethodType IDENTIFIER Parameters Body {struct MethodDeclaration *md = new MethodDeclaration(); md->visibility = $1; md->staticness = $2; md->methodtype = $3; md->t_id = $4; md->parameters = $5; md->body = $6; $$ = md;}
        ;
 
 Parameters
-       : LPAREN               RPAREN	
-       | LPAREN ParameterList RPAREN	
+       : LPAREN               RPAREN	{struct Parameters *ps = new Parameters(); ps->t_lparen = $1; ps->t_rparen = $2; $$ = ps;}
+       | LPAREN ParameterList RPAREN	{struct Parameters *ps = new Parameters(); ps->t_lparen = $1; ps->parameterlist  $2; ps->t_rparen = $3; $$ = ps;}
        ;
 
 ParameterList
