@@ -27,6 +27,34 @@ void print_token(string token) {
        cout << token << "\n";
 }
 
+struct Extension {
+       string token1, token2;
+       void traverse() {
+              for (int i = 0; i < spaces; i++, cout << " "); cout << "| ";
+              cout << "ClassBody\n";
+              spaces += SPACES_ADD;
+              print_token(token1);
+              print_token(token2);
+              spaces -= SPACES_ADD;
+       }
+};
+
+struct ClassBody {
+       string t_lbrace, t_rbrace;
+       struct ClassMembers *classmembers;
+       ClassBody() : classmembers(nullptr) {}
+
+       void traverse() {
+              for (int i = 0; i < spaces; i++, cout << " "); cout << "| ";
+              cout << "ClassBody\n";
+              spaces += SPACES_ADD;
+              print_token(t_lbrace);
+              if (classmembers) classmembers->traverse();
+              print_token(t_rbrace);
+              spaces -= SPACES_ADD;
+       }
+};
+
 struct ClassMembers {
        struct ClassMembers *classmembers;
        struct ClassMember *classmember;
@@ -747,7 +775,7 @@ ClassDeclaration
 
 Extension
        : /* empty */			
-       | EXTENDS IDENTIFIER		
+       | EXTENDS IDENTIFIER		{struct Extension *e = new Extension(); e->token1 = $1; e->token2 = $2; $$ = e;}
        ;
 
 ClassBody
