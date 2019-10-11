@@ -22,9 +22,311 @@ int relation(double first, double second, int sign);
 int spaces = 0;
 
 void print_token(string token) {
+       if (!token) return;
        for (int i = 0; i < spaces; i++, cout << " "); cout << "| ";
        cout << token << "\n";
 }
+
+
+
+struct ParameterList {
+       struct Parameter *parameter;
+       struct ParameterList *parameterlist;
+       string t_comma;
+
+       ParameterList() : parameterlist(nullptr), parameterlist(nullptr) {}
+
+       void traverse() {
+              for (int i = 0; i < spaces; i++, cout << " "); cout << "| ";
+              cout << "ParameterList\n";
+              spaces += SPACES_ADD;
+              if (parameterlist) parameterlist->traverse();
+              print_token(t_comma);
+              if (parameter) parameter->traverse();
+              spaces -= SPACES_ADD;
+       }
+};
+
+struct Parameter {
+       struct Type *type;
+       string t_id;
+       Parameter() : type(nullptr) {}
+
+       void traverse() {
+              for (int i = 0; i < spaces; i++, cout << " "); cout << "| ";
+              cout << "Parameter\n";
+              spaces += SPACES_ADD;
+              if (type) type->traverse();
+              print_token(t_id);
+              spaces -= SPACES_ADD;
+       }
+};
+
+struct MethodType {
+       struct Type *type;
+       string t_void;
+
+       MethodType() : type(nullptr) {}
+
+       void traverse() {
+              for (int i = 0; i < spaces; i++, cout << " "); cout << "| ";
+              cout << "MethodType\n";
+              spaces += SPACES_ADD;
+              if (type) type->traverse;
+              print_token(t_void);
+              spaces -= SPACES_ADD;
+       }
+};
+
+struct Body { 
+       string t_lbrace, t_rbrace;
+       struct LocalDeclarations *localdeclarations;
+       struct Statements *statements;
+
+       Body() : localdeclarations(nullptr), statements(nullptr) {}
+
+       void traverse() {
+              for (int i = 0; i < spaces; i++, cout << " "); cout << "| ";
+              cout << "Body\n";
+              spaces += SPACES_ADD;
+              print_token(t_lbrace);
+              if (localdeclarations) localdeclarations->traverse();
+              if (statements) statements->traverse();
+              print_token(t_rbrace);
+              spaces -= SPACES_ADD;
+       }
+
+};
+
+struct LocalDeclarations {
+       struct LocalDeclarations *localdeclarations;
+       struct LocalDeclaration *localdeclaration;
+       LocalDeclarations() : localdeclaration(nullptr), localdeclarations(nullptr) {}
+
+       void traverse() {
+              for (int i = 0; i < spaces; i++, cout << " "); cout << "| ";
+              cout << "LocalDeclaration\n";
+              spaces += SPACES_ADD;
+              if (localdeclarations) localdeclarations->traverse();
+              if (localdeclaration) localdeclaration->traverse();
+              spaces -= SPACES_ADD;
+       }
+};
+
+struct LocalDeclaration {
+       struct Type *type;
+       string t_id, t_semicolon;
+       LocalDeclaration() : type(nullptr) {}
+
+       void traverse() {
+              for (int i = 0; i < spaces; i++, cout << " "); cout << "| ";
+              cout << "LocalDeclaration\n";
+              spaces += SPACES_ADD;
+              if (type) type->traverse();
+              print_token(t_id);
+              print_token(t_semicolon);
+              spaces -= SPACES_ADD;
+       }
+};
+
+struct Statements {
+       struct Statement *statement;
+       struct Statements *statements;
+       Statements() : statement(nullptr), statements(nullptr) {}
+
+       void traverse() {
+              for (int i = 0; i < spaces; i++, cout << " "); cout << "| ";
+              cout << "Statement\n";
+              spaces += SPACES_ADD;
+              if (statements) statements->traverse();
+              if (statement) statement->traverse();
+              spaces -= SPACES_ADD;
+       }
+};
+
+struct Statement {
+       struct Assignment *assignment;
+       struct IfStatement *ifstatement;
+       struct WhileStatement *whilestatement;
+       struct ReturnStatement *returnstatement;
+       struct CallStatement *callstatement;
+       struct PrintStatement *printstatement;
+       struct Block *block;
+       Statement() : assignment(nullptr), ifstatement(nullptr), whilestatement(nullptr), returnstatement(nullptr), callstatement(nullptr), printstatement(nullptr), block(nullptr) {}
+
+       void traverse() {
+              for (int i = 0; i < spaces; i++, cout << " "); cout << "| ";
+              cout << "Statement\n";
+              spaces += SPACES_ADD;
+
+              if (assignment) assignment->traverse();
+              if (ifstatement) ifstatement->traverse();
+              if (whilestatement) whilestatement->traverse();
+              if (returnstatement) returnstatement->traverse();
+              if (callstatement) callstatement->traverse();
+              if (printstatement) printstatement->traverse();
+              if (block) block->traverse();
+
+              spaces -= SPACES_ADD;
+       }
+};
+
+struct Assignment {
+       struct LeftPart *leftpart;
+       struct Expression *expression;
+       string t_assign, t_semicolon;
+       Assignment() : leftpart(nullptr), expression(nullptr) {}
+
+       void traverse() {
+              for (int i = 0; i < spaces; i++, cout << " "); cout << "| ";
+              cout << "Assignment\n";
+              spaces += SPACES_ADD;
+              if (leftpart) leftpart->traverse();
+              print_token(t_assign);
+              if (expression) expression->traverse();
+              print_token(t_semicolon);
+              spaces -= SPACES_ADD;
+       }
+};
+
+struct IfStatement {
+       string t_if, t_lparen, t_rparen, t_else;
+       struct Relation *relation;
+       struct Statement * statement1, statement2;
+       IfStatement() : relation(nullptr), statement1(nullptr), statement2(nullptr) {}
+
+       void traverse() {
+              for (int i = 0; i < spaces; i++, cout << " "); cout << "| ";
+              cout << "WhileStatement\n";
+              spaces += SPACES_ADD;
+              print_token(t_if);
+              print_token(t_lparen);
+              if (relation) relation->traverse();
+              print_token(t_rparen);
+              if (statement1) statement1->traverse();
+              print_token(t_else);
+              if (statement2) statement2->traverse();
+              spaces -= SPACES_ADD;
+       }
+};
+
+struct WhileStatement {
+       string t_while, t_loop, t_semicolon;
+       struct Relation *relation;
+       struct Statement *statement;
+       WhileStatement() : relationaloperator(nullptr), statement(nullptr) {}
+       void traverse() {
+              for (int i = 0; i < spaces; i++, cout << " "); cout << "| ";
+              cout << "WhileStatement\n";
+              spaces += SPACES_ADD;
+
+              print_token(t_while);
+              if (relation) relation->traverse();
+              print_token(t_loop);
+              if (statement) statement->traverse();
+              print_token(t_semicolon);
+
+              spaces -= SPACES_ADD;
+       }
+}
+
+struct ReturnStatement {
+       string t_return, t_semicolon
+       struct Expression *expression;
+       ReturnStatement() : expression(nullptr) {}
+       void traverse() {
+              for (int i = 0; i < spaces; i++, cout << " "); cout << "| ";
+              cout << "ReturnStatement\n";
+              spaces += SPACES_ADD;
+              if (t_return) print_token(t_return);
+              if (expression) expression->traverse();
+              if (t_semicolon) print_token(t_semicolon);
+              spaces -= SPACES_ADD;
+       }
+};
+
+struct CallStatement {
+       string t_lparen, t_rparen, t_semicolon;
+       struct CompoundName *compoundname;
+       struct ArgumentList *argumentlist;
+
+       CallStatement() : compoundname(nullptr), argumentlist(nullptr) {}
+
+       void traverse() {
+              for (int i = 0; i < spaces; i++, cout << " "); cout << "| ";
+              cout << "CallStatement\n";
+              spaces += SPACES_ADD;
+              if (compoundname) compoundname->traverse();
+              if (t_lparen) print_token(t_lparen);
+              if (argumentlist) argumentlist->traverse();
+              if (t_rparen) print_token(t_rparen);
+              if (t_semicolon) print_token(t_semicolon);
+              spaces -= SPACES_ADD;
+       }
+};
+
+struct ArgumentList {
+       struct ArgumentList *argumentlist;
+       string t_comma;
+       struct Expression *expression;
+
+       ArgumentList() : argumentlist(nullptr), expression(nullptr) {}
+       void traverse() {
+              for (int i = 0; i < spaces; i++, cout << " "); cout << "| ";
+              cout << "ArgumentList\n";
+              spaces += SPACES_ADD;
+              if (argumentlist) argumentlist->traverse();
+              if (t_comma) print_token(t_comma);
+              if (expression) expression->traverse();
+              spaces -= SPACES_ADD;
+       }
+};
+
+struct Block {
+       struct Statements * statements;
+       string t_lbrace, t_rbrace;
+       Block() : statements(nullptr) {}
+
+       void traverse() {
+              for (int i = 0; i < spaces; i++, cout << " "); cout << "| ";
+              cout << "Block\n";
+              spaces += SPACES_ADD;
+              if (t_lbrace) print_token(t_lbrace);
+              if (statements) statements->traverse();
+              if (t_rbrace) print_token(t_rbrace);
+              spaces -= SPACES_ADD;
+       }
+};
+
+struct Relation {
+       struct Expression *expression1, expression2;
+       struct RelationalOperator * relationaloperator;
+       Relation() : expression1(nullptr), expression2(nullptr), relationaloperator(nullptr) {}
+       
+       void traverse() {
+              for (int i = 0; i < spaces; i++, cout << " "); cout << "| ";
+              cout << "Relation\n";
+              spaces += SPACES_ADD;
+
+              if (expression1) expression1->traverse()
+              if (relationaloperator) relationaloperator->traverse();
+              if (expression2) expression2->traverse();
+
+              spaces -= SPACES_ADD;
+       }
+};
+
+struct RelationalOperator {
+     string token;
+
+       void traverse() {
+              for (int i = 0; i < spaces; i++, cout << " "); cout << "| ";
+              cout << "RelationalOperator\n";
+              spaces += SPACES_ADD;
+              print_token(token);
+              spaces -= SPACES_ADD;
+       }  
+};
 
 struct ArrayTail {
        string t_lbracket, t_rbracket;
@@ -374,49 +676,49 @@ Parameters
        ;
 
 ParameterList
-       :                     Parameter	
-       | ParameterList COMMA Parameter	
+       :                     Parameter	{struct ParameterList *pl = new ParameterList(); pl->parameter = $1; $$ = pl;}
+       | ParameterList COMMA Parameter	{struct ParameterList *pl = new ParameterList(); pl->parameterlist = $1; pl->t_comma = $2; pl->parameter = $3; $$ = pl;}
        ;
 
 Parameter
-       : Type IDENTIFIER		
+       : Type IDENTIFIER		{struct Parameter *p = new Parameter(); p->type = $1; p->t_id = $2; $$ = p;}
        ;
 
 MethodType
-       : Type				
-       | VOID				
+       : Type				{struct MethodType *mt = new MethodType(); mt->type = $1; $$ = mt;}
+       | VOID				{struct MethodType *mt = new MethodType(); mt->t_void = $1; $$ = mt;}
        ;
 
 Body
-       : LBRACE LocalDeclarations Statements RBRACE	
+       : LBRACE LocalDeclarations Statements RBRACE	{struct Body *b = new Body(); b->t_lbrace = $1; b->localdeclarations = $2; b->statements = $3; b->t_rbrace = $4; $$ = b;}
        ;
 
 LocalDeclarations
-       :                   LocalDeclaration		
-       | LocalDeclarations LocalDeclaration		
+       :                   LocalDeclaration	{struct LocalDeclarations *ld = new LocalDeclarations(); ld->localdeclaration = $1; $$ = ld;}
+       | LocalDeclarations LocalDeclaration	{struct LocalDeclarations *ld = new LocalDeclarations(); ls->localdeclarations = $1; ld->localdeclaration = $2; $$ = ld;}
        ;
 
 LocalDeclaration
-       : Type IDENTIFIER SEMICOLON			
+       : Type IDENTIFIER SEMICOLON		{struct LocalDeclaration *ld = new LocalDeclaration(); ld->type = &1; ld->t_id = $2; ld->t_semicolon = $3; $$ = ld;}
        ;
 
 Statements
-       :            Statement		
-       | Statements Statement		
+       :            Statement		{struct Statements *s = new Statements(); s->statement = $1; $$ = s;}
+       | Statements Statement		{struct Statements *s = new Statements(); s->statements = $1; s->statement = $2; $$ = s;}
        ;
 
 Statement
-       : Assignment			
-       | IfStatement			
-       | WhileStatement			
-       | ReturnStatement		
-       | CallStatement			
-       | PrintStatement			
-       | Block				
+       : Assignment			{struct Statement *s = new Statement(); s->assignment = $1; $$ = s;}
+       | IfStatement			{struct Statement *s = new Statement(); s->ifstatement = $1; $$ = s;}
+       | WhileStatement		{struct Statement *s = new Statement(); s->whilestatement = $1; $$ = s;}	
+       | ReturnStatement		{struct Statement *s = new Statement(); s->returnstatement = $1; $$ = s;}
+       | CallStatement		{struct Statement *s = new Statement(); s->callstatement = $1; $$ = s;}	
+       | PrintStatement		{struct Statement *s = new Statement(); s->printstatement = $1; $$ = s;}	
+       | Block			{struct Statement *s = new Statement(); s->block = $1; $$ = s;}	
        ;
 
 Assignment
-       : LeftPart ASSIGN Expression SEMICOLON		
+       : LeftPart ASSIGN Expression SEMICOLON		{struct Assignment *a = new Assignment(); a->leftpart = $1; a->t_assign = $2; a->expression = $3; a->t_semicolon = $4; $$ = a;}
        ;
 
 LeftPart
@@ -430,27 +732,27 @@ CompoundName
        ;
 
 IfStatement
-       : IF LPAREN Relation RPAREN Statement		
-       | IF LPAREN Relation RPAREN Statement ELSE Statement	
+       : IF LPAREN Relation RPAREN Statement		       {struct IfStatement *is = new IfStatement(); is->t_if = $1; is->t_lparen = $2; t->relation = $3; t->RPAREN = $4; t->statement1 = $5; $$ = t;}
+       | IF LPAREN Relation RPAREN Statement ELSE Statement	{struct IfStatement *is = new IfStatement(); is->t_if = $1; is->t_lparen = $2; t->relation = $3; t->RPAREN = $4; t->statement1 = $5; t->t_else = $6; t->statement2 = $7; $$ = t;}
        ;
 
 WhileStatement
-       : WHILE Relation LOOP Statement SEMICOLON	
+       : WHILE Relation LOOP Statement SEMICOLON	{struct WhileStatement *ws = new WhileStatement(); ws->t_while = $1; ws->relation = $2; ws->t_loop = $3; ws->statement = $4; ws->t_semicolon = $5; $$ = ws;}
        ;
 
 ReturnStatement
-       : RETURN            SEMICOLON	{return;}
-       | RETURN Expression SEMICOLON	{return $2;}
+       : RETURN            SEMICOLON	{struct ReturnStatement rs = new ReturnStatement(); rs->t_return = $1; rs->t_semicolon = $2; $$ = rs;}
+       | RETURN Expression SEMICOLON	{struct ReturnStatement rs = new ReturnStatement(); rs->t_return = $1; rs->expression = $2; rs->t_semicolon = $3; $$ = rs;}
        ;
 
 CallStatement
-       : CompoundName LPAREN              RPAREN SEMICOLON	
-       | CompoundName LPAREN ArgumentList RPAREN SEMICOLON	
+       : CompoundName LPAREN              RPAREN SEMICOLON	{struct CallStatement *cs = new CallStatement(); cs->compoundname = $1; cd->t_lparen = $2; cs->t_rparen = $3; cs->t_semicolon = $4; $$ = cs;}
+       | CompoundName LPAREN ArgumentList RPAREN SEMICOLON	{struct CallStatement *cs = new CallStatement(); cs->compoundname = $1; cd->t_lparen = $2; cd->argumentlist = $3; cs->t_rparen = $4; cs->t_semicolon = $5; $$ = cs;}
        ;
 
 ArgumentList
-       :                    Expression	{;}
-       | ArgumentList COMMA Expression	
+       :                    Expression	{struct ArgumentList *al = new ArgumentList(); ar->expression = $1; $$ = ar;}
+       | ArgumentList COMMA Expression	{struct ArgumentList *al = new ArgumentList(); ar->argumentlist = $1; ar->t_comma = $2; ar->expression = $3; $$ = ar;}
        ;
 
 PrintStatement
@@ -458,20 +760,20 @@ PrintStatement
        ;
 
 Block
-       : LBRACE            RBRACE	
-       | LBRACE Statements RBRACE	
+       : LBRACE            RBRACE	       {struct Block *b = new Block(); b->t_lbrace = $1; b->t_rbrace = $2; $$ = b;}
+       | LBRACE Statements RBRACE         {struct Block *b = new Block(); b->t_lbrace = $1; b->statements = $2; b->t_rbrace = $3; $$ = b;}
        ;
 
 Relation
-       : Expression			{$$ = (int)($1 != 0);}
-       | Expression RelationalOperator Expression       {$$ = relation($1, $3, $2);}
+       : Expression			                     {struct Relation *r = new Relation(); r->expression1 = $1; $$ = r;}
+       | Expression RelationalOperator Expression       {struct Relation *r = new Relation(); r->expression1 = $1; r->relationaloperator = $2; r->expression2 = $3; $$ = r;}
        ;
 
 RelationalOperator
-       : LESS				{$$ = 1;}
-       | GREATER			{$$ = 2;}
-       | EQUAL			{$$ = 3;}
-       | NOT_EQUAL			{$$ = 4;}
+       : LESS				{struct RelationalOperator *ro = new RelationalOperator(); ro->token = $1; $$ = ro;}
+       | GREATER			{struct RelationalOperator *ro = new RelationalOperator(); ro->token = $1; $$ = ro;}
+       | EQUAL			{struct RelationalOperator *ro = new RelationalOperator(); ro->token = $1; $$ = ro;}
+       | NOT_EQUAL			{struct RelationalOperator *ro = new RelationalOperator(); ro->token = $1; $$ = ro;}
        ;
 
 Expression
