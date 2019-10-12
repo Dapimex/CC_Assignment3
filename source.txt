@@ -6,7 +6,5 @@ public class MyProgram; {
 	public static void counter (int counts) {
 		int i;
         i = 0;
-
-        if (counts != 0) while i < counts loop i=i-1;
 	}
 }
