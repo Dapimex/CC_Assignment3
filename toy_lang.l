@@ -4,53 +4,53 @@
         int yylex(void);
         void yyerror (char *s);
     }
-#include "y.tab.h"
 
-void yyerror (char *s);
-int yylex();
+#include "y.tab.h"
+#include <string>
 
 
 %}
 
 
 %%
-"import"	{return IMPORT;}
-"class" 	{return CLASS;}
-"extends"	{return EXTENDS;}
-"private"	{return PRIVATE;}
-"public"	{return PUBLIC;}
-"static"	{return STATIC;}
-"void"		{return VOID;}
-"if"		{return IF;}
-"else" 		{return ELSE;}
-"while"		{return WHILE;}
-"loop"		{return LOOP;}
-"return"	{return RETURN;}
-"print"		{return PRINT;}
-"null"		{return _NULL;}
-"new"		{return NEW;}
-"int" 		{return INT;}
-"real"		{return REAL;}
-\{		{return LBRACE;}
-\}		{return RBRACE;}
-\(		{return LPAREN;}
-\)		{return RPAREN;}
-\[		{return LBRACKET;}
-\]		{return RBRACKET;}
-\,		{return COMMA;}
-\.		{return DOT;}
-\;		{return SEMICOLON;}
-\={1}		{return ASSIGN;}
-\<		{return LESS;}
-\>		{return GREATER;}
-\={2}		{return EQUAL;}
-[\!\=]		{return NOT_EQUAL;}
-\+		{return PLUS;}
-\-		{return MINUS;}
-\*		{return MULTIPLY;}
-\/		{return DIVIDE;}
-[a-zA-Z][_a-zA-Z0-9]*	{yylval.ID = yytext; return IDENTIFIER;}
-[0-9]+\.?[0-9]*		{yylval.NUM = atoi(yytext); return NUMBER;}
+"import"	{yylval.ID = "import"; return IMPORT;}
+"class" 	{yylval.ID = "class"; return CLASS;}
+"extends"	{yylval.ID = "extends"; return EXTENDS;}
+"private"	{yylval.ID = "private"; return PRIVATE;}
+"public"	{yylval.ID = "public"; return PUBLIC;}
+"static"	{yylval.ID = "static"; return STATIC;}
+"void"		{yylval.ID = "void"; return VOID;}
+"if"		{yylval.ID = "if"; return IF;}
+"else" 		{yylval.ID = "else"; return ELSE;}
+"while"		{yylval.ID = "while"; return WHILE;}
+"loop"		{yylval.ID = "loop"; return LOOP;}
+"return"	{yylval.ID = "return"; return RETURN;}
+"print"		{yylval.ID = "print"; return PRINT;}
+"null"		{yylval.ID = "null"; return _NULL;}
+"new"		{yylval.ID = "new"; return NEW;}
+"int" 		{yylval.ID = "int"; return INT;}
+"real"		{yylval.ID = "real"; return REAL;}
+\{		{yylval.ID = "{"; return LBRACE;}
+\(		{yylval.ID = "("; return LPAREN;}
+\}		{yylval.ID = "}"; return RBRACE;}
+\)		{yylval.ID = ")"; return RPAREN;}
+\[		{yylval.ID = "["; return LBRACKET;}
+\]		{yylval.ID = "]"; return RBRACKET;}
+\,		{yylval.ID = ","; return COMMA;}
+\.		{yylval.ID = "."; return DOT;}
+\;		{yylval.ID = ";"; return SEMICOLON;}
+\={1}		{yylval.ID = "="; return ASSIGN;}
+\<		{yylval.ID = "<"; return LESS;}
+\>		{yylval.ID = ">"; return GREATER;}
+\={2}		{yylval.ID = "=="; return EQUAL;}
+[\!\=]		{yylval.ID = "\!\="; return NOT_EQUAL;}
+\+		{yylval.ID = "+"; return PLUS;}
+\-		{yylval.ID = "-"; return MINUS;}
+\*		{yylval.ID = "*"; return MULTIPLY;}
+\/		{yylval.ID = "/"; return DIVIDE;}
+\Z      {yylval.ID = "\Z"; return EOFF;}
+[a-zA-Z_][a-zA-Z_0-9]*	{yylval.ID = yytext; return IDENTIFIER;}
+[0-9]+\.?[0-9]*		{yylval.ID = yytext; return NUMBER;}
 [ \t\n]		;
 .		{yyerror("Unexpected Character");}
 %%
